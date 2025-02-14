@@ -1,0 +1,55 @@
+version: "3.9"
+
+services:
+  back:
+    build:
+      context: .
+      dockerfile: dockerfile_back
+    ports:
+      - "5000:5000"
+    depends_on:
+      - redis
+      - rabbitmq
+    networks:
+      - my_network
+
+  consumer:
+    build:
+      context: .
+      dockerfile: dockerfile_consumer
+    depends_on:
+      - redis
+      - rabbitmq
+    networks:
+      - my_network
+
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - my_network
+  
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: dockerfile._frontend
+    ports:
+      - "8080:80"
+    networks:
+      - my_network
+  
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    restart: always
+    ports:
+      - "5672:5672"   # Port pour RabbitMQ (AMQP)
+      - "15672:15672" # Port pour l'interface Web de RabbitMQ
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge
+

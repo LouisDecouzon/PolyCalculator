@@ -4,7 +4,6 @@
 #le back redemande le résultat et l'envoie au front
 
 from flask import Flask, render_template, request
-import json
 import pika, sys, os, redis
 
 app = Flask(__name__)
